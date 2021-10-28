@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Воровской чат</title>
+</head>
+<style>
+
+    body{
+        background-color: #17212b;
+    }
+    .container{
+        position: relative;
+        /*border: 3px solid #6c7883;*/
+        width: 750px;
+        height: 680px;
+        margin-left: 20px;
+        background-color: #17212b;
+        border-radius: 5px;
+    }
+
+    .container-command{
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        border: 2px solid #6c7883;
+        right: 20px;
+        top: 25px;
+        color: #cbc6c6;
+        border-radius: 10px;
+    }
+
+    .container-command p:first-child{
+        color: crimson;
+        margin-left: 80px;
+    }
+
+    .container-command p{
+        margin-left: 10px;
+    }
+
+    .container-form{
+        position: fixed;
+        width: 470px;
+        height: 50px;
+        border: 2px solid #6c7883;
+        /*right: 50%;*/
+        /*bottom: 5%;*/
+        /*transform: translate(50%, 50%);*/
+        margin-left: 260px;
+        margin-top: 620px;
+        border-radius: 10px;
+
+    }
+
+    .main{
+        display: inline-flex;
+    }
+
+    .command{
+        position: relative;
+        /*border: 2px solid chocolate;*/
+        width: 700px;
+        height: 680px;
+        margin-left: 20px;
+        min-width: 100px;
+    }
+
+    .command .command-item{
+        left: 20px;
+        position: absolute;
+    }
+
+    .msg-form{
+        width: 365px;
+        height: 25px;
+        margin-left: 6px;
+        margin-top: 10px;
+        border: 2px solid #6c7883;
+    }
+
+    .button{
+        height: 30px;
+    }
+
+    .container-msg{
+        position: absolute;
+        word-break: break-all
+    }
+
+    .container-msg p{
+        margin-left: 10px;
+        margin-top: 25px;
+        border: 3px solid #2b5278;
+        background-color: #2b5278;
+        max-width: 200px;
+        border-radius: 10px;
+        padding: 4px;
+        color: #cbc6c6;
+    }
+
+</style>
+<body>
+<div class="main">
+    <div class="container">
+        <div id="container-msg" class="container-msg">
+
+        </div>
+        <div class="container-command">
+            <p>Чат только для натуралов!!!</p>
+            <p>Вводим команду, после ставим пробел и пишем текст</p>
+            <p>/join "Название комнаты" - войти в комнату или создать, если таковая не была создана ранее</p>
+            <p>/nick "Ваше имя" - задать имя</p>
+            <p>/msg "Ваше сообщение" - отправить сообщение всем участникам комнаты</p>
+            <p>/rooms - вывести доступный список комнат</p>
+            <p>/quit - отсоединиться от сервера</p>
+        </div>
+        <div class="container-form">
+            <input id="msg-form" class="msg-form" type="text" name="name">
+            <input type="button" id="butt" class="button" value="Отправить" >
+        </div>
+    </div>
+    <div class="command">
+        <div class="command-item">
+            <p></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    function message(msg) {
+        const element = document.createElement("p");
+        const content = document.createTextNode(msg);
+        const root = document.getElementById("container-msg");
+        element.appendChild(content)
+        root.appendChild(element)
+    }
+
+    let socket = new WebSocket("ws://18.218.198.127:7070/ws");
+    console.log("Attempting Connection...");
+
+    socket.onopen = () => {
+        console.log("Successfully Connected");
+        // socket.send("/join kek")
+    };
+
+    socket.onclose = event => {
+        console.log("Socket Closed Connection: ", event);
+    };
+
+    socket.onerror = error => {
+        console.log("Socket Error: ", error);
+    };
+
+    socket.onmessage = (msg) => {
+        message(msg.data)
+    }
+
+
+
+    document.getElementById("butt").onclick = function () {
+        let msg = document.getElementById("msg-form").value;
+        socket.send(msg.toString())
+        msg = msg.split("/msg").join(' ')
+
+        if(msg !== "" ){
+            message(msg)
+        }
+        document.getElementById("msg-form").value = ""
+    }
+
+    window.onbeforeunload = closingCode;
+    function closingCode(){
+        socket.send("/quit")
+        return null;
+    }
+</script>
