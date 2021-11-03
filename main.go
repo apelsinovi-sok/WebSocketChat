@@ -19,7 +19,6 @@ func chatStart(w http.ResponseWriter, r *http.Request) {
 	upgrade.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrade.Upgrade(w, r, nil)
 	if err != nil {
-		//log.Println(err)
 		return
 	}
 	go s.newClient(ws)
