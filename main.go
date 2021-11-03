@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-const PORT = ":7070"
+const PORT = ":7081"
 
 var upgrade = websocket.Upgrader{
 	ReadBufferSize:  1024,

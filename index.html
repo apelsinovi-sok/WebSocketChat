@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Воровской чат</title>
+    <title>Online Chat</title>
 </head>
 <style>
 
@@ -44,9 +44,6 @@
         width: 470px;
         height: 50px;
         border: 2px solid #6c7883;
-        /*right: 50%;*/
-        /*bottom: 5%;*/
-        /*transform: translate(50%, 50%);*/
         margin-left: 260px;
         margin-top: 620px;
         border-radius: 10px;
@@ -59,7 +56,6 @@
 
     .command{
         position: relative;
-        /*border: 2px solid chocolate;*/
         width: 700px;
         height: 680px;
         margin-left: 20px;
@@ -107,7 +103,7 @@
 
         </div>
         <div class="container-command">
-            <p>Чат только для натуралов!!!</p>
+            <p>Инструкция</p>
             <p>Вводим команду, после ставим пробел и пишем текст</p>
             <p>/join "Название комнаты" - войти в комнату или создать, если таковая не была создана ранее</p>
             <p>/nick "Ваше имя" - задать имя</p>
@@ -138,12 +134,11 @@
         root.appendChild(element)
     }
 
-    let socket = new WebSocket("ws://18.218.198.127:7070/ws");
+    let socket = new WebSocket("ws://52.14.163.248:7081//ws");
     console.log("Attempting Connection...");
 
     socket.onopen = () => {
         console.log("Successfully Connected");
-        // socket.send("/join kek")
     };
 
     socket.onclose = event => {
