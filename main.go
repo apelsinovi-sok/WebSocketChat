@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"html/template"
 	"log"
@@ -24,9 +25,9 @@ func chatStart(s *server, w http.ResponseWriter, r *http.Request) {
 	go s.newClient(ws)
 }
 
-func homePage(w http.ResponseWriter, r *http.Request) {
+func homePage(c *gin.Context) {
 	tmp, _ := template.ParseFiles("index.html")
-	err := tmp.Execute(w, "")
+	err := tmp.Execute(c.Writer, "")
 	if err != nil {
 		log.Println("Ошибка")
 	}
@@ -36,12 +37,12 @@ func main() {
 	var s = newServer()
 	go s.run()
 	fmt.Printf("HTTP Сервер запущен на порту %s\n", PORT)
-
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		chatStart(s, w, r)
+	g := gin.Default()
+	g.GET("/", homePage)
+	g.GET("/ws", func(c *gin.Context) {
+		chatStart(s, c.Writer, c.Request)
 	})
-	err := http.ListenAndServe(PORT, nil)
+	err := g.Run(":8080")
 	if err != nil {
 		log.Println(err)
 		return
