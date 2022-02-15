@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-const PORT = ":7081"
+const PORT = ":8080"
 
 var upgrade = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -42,7 +42,7 @@ func main() {
 	g.GET("/ws", func(c *gin.Context) {
 		chatStart(s, c.Writer, c.Request)
 	})
-	err := g.Run(":8080")
+	err := g.Run(PORT)
 	if err != nil {
 		log.Println(err)
 		return
