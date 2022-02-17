@@ -28,11 +28,11 @@ func (s *server) run() {
 		case CMD_JOIN:
 			s.join(cmd.client, cmd.args)
 		case CMD_ROOMS:
-			s.listRooms(cmd.client, cmd.args)
+			s.listRooms(cmd.client)
 		case CMD_MSG:
 			s.msg(cmd.client, cmd.args)
 		case CMD_QUIT:
-			s.quit(cmd.client, cmd.args)
+			s.quit(cmd.client)
 		}
 	}
 }
@@ -62,7 +62,7 @@ func (s *server) join(c *client, args []string) {
 		return
 	}
 
-	roomName := strings.Join(args[1:len(args)], " ")
+	roomName := strings.Join(args[1:], " ")
 	r, ok := s.rooms[roomName]
 	if !ok {
 		r = &room{
@@ -83,7 +83,7 @@ func (s *server) join(c *client, args []string) {
 
 }
 
-func (s *server) listRooms(c *client, args []string) {
+func (s *server) listRooms(c *client) {
 	var rooms []string
 	for name := range s.rooms {
 		rooms = append(rooms, name)
@@ -93,13 +93,13 @@ func (s *server) listRooms(c *client, args []string) {
 
 func (s *server) msg(c *client, args []string) {
 	if c.room == nil {
-		c.err(errors.New("Вы не находитесь в комнате"))
+		c.err(errors.New("вы не находитесь в комнате"))
 	} else {
-		c.room.broadCast(c, c.nick+": "+strings.Join(args[1:len(args)], " "))
+		c.room.broadCast(c, c.nick+": "+strings.Join(args[1:], " "))
 	}
 }
 
-func (s *server) quit(c *client, args []string) {
+func (s *server) quit(c *client) {
 	fmt.Printf("client disconnected %s", c.conn.RemoteAddr().String())
 	s.quitCurrentRoom(c)
 	c.msg("Пока :(")
